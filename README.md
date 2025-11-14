@@ -15,6 +15,8 @@ Highlights:
 🚀 Easy Deployment (free-tier friendly with Sevalla)
 
 🧪 .env Setup
+
+
 Backend (/backend)
 PORT=3000
 MONGO_URI=your_mongo_uri_here
