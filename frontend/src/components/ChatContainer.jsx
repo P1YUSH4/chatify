@@ -7,7 +7,8 @@ import MessageInput from "./MessageInput";
 import MessagesLoadingSkeleton from "./MessagesLoadingSkeleton";
 
 function ChatContainer() {
-  const {selectedUser, getMessagesByUserId, messages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
+  const {selectedUser, getMessagesByUserId, messages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessages, typingUsers } = useChatStore();
+  const isPartnerTyping = typingUsers.includes(selectedUser?._id);
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
@@ -24,7 +25,7 @@ function ChatContainer() {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isPartnerTyping]);
 
 
 
@@ -59,11 +60,31 @@ function ChatContainer() {
             </div> 
           ))}
 
+          {isPartnerTyping && (
+            <div className="chat chat-start">
+              <div className="chat-bubble bg-slate-800 text-slate-200 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
+              </div>
+            </div>
+          )}
+
           {/* 👇 scroll target */}
           <div  ref={messageEndRef}  />
          </div>
         ) : isMessagesLoading ? <MessagesLoadingSkeleton /> :  (
-          <NoChatHistoryPlaceholder name={selectedUser.fullName}/>
+          isPartnerTyping ? (
+            <div className="max-w-3xl mx-auto">
+              <div className="chat chat-start">
+                <div className="chat-bubble bg-slate-800 text-slate-200 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
+                </div>
+              </div>
+            </div>
+          ) : <NoChatHistoryPlaceholder name={selectedUser.fullName}/>
         )}
 
       </div>
